@@ -122,7 +122,7 @@ begin
     pc_reset <= reset;
     pc_skip <= '0'; --no initial skip
     
-    -- Multicycle state machine
+    --multicycle state machine
     process(clk, reset)
     begin
         if reset = '1' then
@@ -132,7 +132,7 @@ begin
         end if;
     end process;
     
-    -- Next state logic
+    --next state logic
     process(current_state)
     begin
         case current_state is
@@ -317,10 +317,11 @@ begin
     id_exe_A_en <= '1' when current_state = ID else '0';
     id_exe_B_en <= '1' when current_state = ID else '0';
 
+    --id-exe interstate input determination
     id_exe_A_in <= rf_rd_data1 when current_state = ID else (others => '0');
     id_exe_B_in <= rf_rd_data2 when current_state = ID else (others => '0');
     
-    -- PC stall control (stall during ID, EXE, WB)
+    --PC stall control (stall during ID, EXE, WB)
     pc_stall <= '1' when current_state /= FETCH else '0';
 
     --alu instantiation
@@ -333,7 +334,7 @@ begin
         equal => alu_equal
     );
 
-    --alu input connections
+    --alu input connections from id-exe interstate
     alu_in_a <= id_exe_A_out;--rf_rd_data1;
     alu_in_b <= id_exe_B_out;--sign_ext_imm when alu_src = '1' else rf_rd_data2;
 
